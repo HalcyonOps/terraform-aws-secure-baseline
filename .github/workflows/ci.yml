@@ -1,0 +1,101 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  TERRAFORM_VERSION: "1.15.3"
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Format — one fast check across the whole repo.
+  # ---------------------------------------------------------------------------
+  fmt:
+    name: Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+      - name: terraform fmt
+        run: terraform fmt -check -recursive -diff
+
+  # ---------------------------------------------------------------------------
+  # Module pipeline — validate, native test, and lint each module in parallel.
+  # No AWS credentials: validate uses -backend=false and tests use a mocked
+  # provider, so nothing is deployed.
+  # ---------------------------------------------------------------------------
+  module:
+    name: Module (${{ matrix.module }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        module: [s3-bucket]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+      - name: terraform init
+        run: terraform -chdir=modules/${{ matrix.module }} init -backend=false
+
+      - name: terraform validate
+        run: terraform -chdir=modules/${{ matrix.module }} validate
+
+      - name: terraform test
+        run: terraform -chdir=modules/${{ matrix.module }} test
+
+      - uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.62.1
+
+      - name: tflint
+        run: |
+          tflint --chdir=modules/${{ matrix.module }} --config="$PWD/.tflint.hcl" --init
+          tflint --chdir=modules/${{ matrix.module }} --config="$PWD/.tflint.hcl"
+
+  # ---------------------------------------------------------------------------
+  # Docs drift — every module README must match its code.
+  # ---------------------------------------------------------------------------
+  docs:
+    name: Docs drift
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install terraform-docs
+        run: |
+          curl -sL https://terraform-docs.io/dl/v0.24.0/terraform-docs-v0.24.0-linux-amd64.tar.gz \
+            | tar xz -C /usr/local/bin terraform-docs
+          terraform-docs --version
+      - name: Check module READMEs are current
+        run: |
+          for m in modules/*/; do
+            echo "==> $m"
+            terraform-docs -c .terraform-docs.yml --output-check "$m"
+          done
+
+  # ---------------------------------------------------------------------------
+  # Security gate — proves the "secure by default" claim. Trivy scans the
+  # module source; the hardened defaults must pass with no findings.
+  # ---------------------------------------------------------------------------
+  scan:
+    name: Security scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Trivy
+        run: |
+          curl -sL https://github.com/aquasecurity/trivy/releases/download/v0.69.3/trivy_0.69.3_Linux-64bit.tar.gz \
+            | tar xz -C /usr/local/bin trivy
+          trivy --version
+      - name: Trivy IaC scan (modules must be clean)
+        run: trivy config modules/ --exit-code 1 --severity HIGH,CRITICAL

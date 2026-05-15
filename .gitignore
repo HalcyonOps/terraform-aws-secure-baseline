@@ -1,0 +1,18 @@
+# Terraform working directories and state
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfplan
+crash.log
+crash.*.log
+
+# Local override files — not meant to be committed
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI config that may hold credentials
+.terraformrc
+terraform.rc

@@ -1,0 +1,20 @@
+# Run `pre-commit install` once, then fmt / validate / tflint / docs run on
+# every commit. CI re-runs the same checks so a missed hook never slips by.
+repos:
+  - repo: https://github.com/antonbabenko/pre-commit-terraform
+    rev: v1.105.0
+    hooks:
+      - id: terraform_fmt
+      - id: terraform_validate
+      - id: terraform_tflint
+      - id: terraform_docs
+        args:
+          - --args=--config=.terraform-docs.yml
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-merge-conflict
+      - id: check-yaml

@@ -1,0 +1,20 @@
+# Shared terraform-docs config. Each module README carries a hand-written
+# header followed by an injected, auto-generated reference block. CI runs
+# this with --output-check to fail when a README drifts from the code.
+formatter: "markdown table"
+
+output:
+  file: README.md
+  mode: inject
+  template: |-
+    <!-- BEGIN_TF_DOCS -->
+    {{ .Content }}
+    <!-- END_TF_DOCS -->
+
+sort:
+  enabled: true
+  by: required
+
+settings:
+  anchor: false
+  hide-empty: true
