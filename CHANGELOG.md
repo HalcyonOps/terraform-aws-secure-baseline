@@ -11,5 +11,7 @@ as annotated git tags (`vMAJOR.MINOR.PATCH`).
 
 - `s3-bucket` module — a private, encrypted, versioned S3 bucket with a
   TLS-only bucket policy. Every control is on by default.
+- `network` module — a VPC with public, private, and fully isolated intra
+  subnet tiers. Flow logs on and the default security group locked by default.
 - Authoring toolchain: `terraform-docs` injection, `tflint`, native
   `terraform test`, pre-commit hooks, and a CI pipeline that runs all of them.

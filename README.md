@@ -33,7 +33,7 @@ is infrastructure that passes such a gate **by construction**.
 | Module | Status | Summary |
 | ------ | ------ | ------- |
 | [`s3-bucket`](modules/s3-bucket) | available | Private, encrypted, versioned bucket with a TLS-only policy. |
-| `network` | planned | VPC with public/private/intra subnets and flow logs on by default. |
+| [`network`](modules/network) | available | VPC with public/private/intra subnet tiers, flow logs and a locked default SG. |
 | `iam-assumable-role` | planned | Assumable role with a permission boundary required by default. |
 | `account-baseline` | planned | Composition module — CloudTrail, Config, and password policy, consuming the modules above. |
 

@@ -19,8 +19,8 @@ jobs:
     name: Format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: hashicorp/setup-terraform@v3
+      - uses: actions/checkout@v6
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
       - name: terraform fmt
@@ -37,11 +37,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        module: [s3-bucket]
+        module: [s3-bucket, network]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: ${{ env.TERRAFORM_VERSION }}
 
@@ -54,7 +54,7 @@ jobs:
       - name: terraform test
         run: terraform -chdir=modules/${{ matrix.module }} test
 
-      - uses: terraform-linters/setup-tflint@v4
+      - uses: terraform-linters/setup-tflint@v6
         with:
           tflint_version: v0.62.1
 
@@ -70,7 +70,7 @@ jobs:
     name: Docs drift
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install terraform-docs
         run: |
           curl -sL https://terraform-docs.io/dl/v0.24.0/terraform-docs-v0.24.0-linux-amd64.tar.gz \
@@ -91,7 +91,7 @@ jobs:
     name: Security scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Install Trivy
         run: |
           curl -sL https://github.com/aquasecurity/trivy/releases/download/v0.69.3/trivy_0.69.3_Linux-64bit.tar.gz \
