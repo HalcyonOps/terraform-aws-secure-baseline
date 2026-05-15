@@ -34,7 +34,7 @@ is infrastructure that passes such a gate **by construction**.
 | ------ | ------ | ------- |
 | [`s3-bucket`](modules/s3-bucket) | available | Private, encrypted, versioned bucket with a TLS-only policy. |
 | [`network`](modules/network) | available | VPC with public/private/intra subnet tiers, flow logs and a locked default SG. |
-| `iam-assumable-role` | planned | Assumable role with a permission boundary required by default. |
+| [`iam-assumable-role`](modules/iam-assumable-role) | available | Assumable role with a permissions boundary required by default and MFA on assumption. |
 | `account-baseline` | planned | Composition module — CloudTrail, Config, and password policy, consuming the modules above. |
 
 The collection is designed around three building blocks plus one composition

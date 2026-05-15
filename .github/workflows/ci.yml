@@ -37,7 +37,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        module: [s3-bucket, network]
+        module: [s3-bucket, network, iam-assumable-role]
     steps:
       - uses: actions/checkout@v6
 
