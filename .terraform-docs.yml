@@ -15,6 +15,13 @@ sort:
   enabled: true
   by: required
 
+# The "Providers" section reports resolved provider versions read from
+# .terraform/ — non-deterministic without an init. Requirements already
+# carries the meaningful required_providers constraint.
+sections:
+  hide:
+    - providers
+
 settings:
   anchor: false
   hide-empty: true

@@ -44,12 +44,6 @@ See [`examples/s3-bucket`](../../examples/s3-bucket) for a runnable example.
 | terraform | >= 1.9.0 |
 | aws | >= 5.40, < 7.0 |
 
-## Providers
-
-| Name | Version |
-| ---- | ------- |
-| aws | 6.45.0 |
-
 ## Resources
 
 | Name | Type |
