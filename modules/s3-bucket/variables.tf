@@ -50,6 +50,12 @@ variable "enforce_kms_encryption" {
   default     = true
 }
 
+variable "additional_policy_json" {
+  description = "Extra IAM policy documents (JSON) to merge into the bucket policy, alongside the built-in TLS and KMS controls. Useful for granting log-delivery services such as CloudTrail or Config write access."
+  type        = list(string)
+  default     = []
+}
+
 variable "logging" {
   description = "Optional server access logging. Provide the target bucket and an optional key prefix."
   type = object({

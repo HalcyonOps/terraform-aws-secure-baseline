@@ -67,6 +67,23 @@ run "kms_encryption_selected" {
   }
 }
 
+# Caller-supplied policy documents attach a bucket policy even when the
+# built-in TLS statement is turned off.
+run "additional_policy_documents_attach_a_policy" {
+  command = plan
+
+  variables {
+    bucket_name            = "example-extra-policy-bucket"
+    enforce_tls            = false
+    additional_policy_json = [jsonencode({ Version = "2012-10-17", Statement = [] })]
+  }
+
+  assert {
+    condition     = length(aws_s3_bucket_policy.this) == 1
+    error_message = "additional_policy_json must cause a bucket policy to be attached."
+  }
+}
+
 # Invalid bucket names must be rejected by variable validation, not by AWS.
 run "invalid_bucket_name_rejected" {
   command = plan

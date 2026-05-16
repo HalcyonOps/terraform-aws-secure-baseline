@@ -63,6 +63,7 @@ See [`examples/s3-bucket`](../../examples/s3-bucket) for a runnable example.
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
 | bucket\_name | Name of the S3 bucket. Must be globally unique and DNS-compliant. | `string` | n/a | yes |
+| additional\_policy\_json | Extra IAM policy documents (JSON) to merge into the bucket policy, alongside the built-in TLS and KMS controls. Useful for granting log-delivery services such as CloudTrail or Config write access. | `list(string)` | `[]` | no |
 | block\_public\_access | Apply all four S3 Block Public Access settings. On by default — setting this false is an explicit, audited opt-out. | `bool` | `true` | no |
 | bucket\_key\_enabled | Use an S3 Bucket Key to reduce KMS request costs. Only applies when kms\_key\_arn is set. | `bool` | `true` | no |
 | enforce\_kms\_encryption | When kms\_key\_arn is set, also deny PutObject requests that do not use that key. Ignored when kms\_key\_arn is null. | `bool` | `true` | no |

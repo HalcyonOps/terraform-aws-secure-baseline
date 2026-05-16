@@ -5,7 +5,7 @@
 locals {
   # The bucket policy is only created when at least one statement is requested.
   enforce_kms  = var.kms_key_arn != null && var.enforce_kms_encryption
-  build_policy = var.enforce_tls || local.enforce_kms
+  build_policy = var.enforce_tls || local.enforce_kms || length(var.additional_policy_json) > 0
 }
 
 resource "aws_s3_bucket" "this" {
@@ -91,6 +91,9 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
 # without ever granting it — safe to apply alongside Block Public Access.
 data "aws_iam_policy_document" "this" {
   count = local.build_policy ? 1 : 0
+
+  # Caller-supplied documents are merged in alongside the built-in statements.
+  source_policy_documents = var.additional_policy_json
 
   dynamic "statement" {
     for_each = var.enforce_tls ? [1] : []
