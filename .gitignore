@@ -20,3 +20,4 @@ terraform.rc
 # Local-only Claude state (project-shared config stays committed)
 .claude/settings.local.json
 CLAUDE.local.md
+.claude/worktrees/
